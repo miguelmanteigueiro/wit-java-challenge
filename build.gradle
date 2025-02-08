@@ -28,8 +28,6 @@ subprojects {
 		implementation('org.springframework.kafka:spring-kafka')
 		implementation('com.fasterxml.jackson.core:jackson-databind')
 
-		developmentOnly('org.springframework.boot:spring-boot-docker-compose')
-
 		testImplementation('org.springframework.boot:spring-boot-starter-test')
 		testImplementation('org.springframework.kafka:spring-kafka-test')
 
