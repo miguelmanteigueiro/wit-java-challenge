@@ -18,7 +18,6 @@ public class CalculatorService {
     @KafkaListener(topics = "calculate")
     public void calculate(CalculatorModel request) {
         BigDecimal result;
-        System.out.println("\n\n\n\n------------------------- Received request: " + request);
 
         try {
             result = switch (request.getOperation()) {
@@ -34,11 +33,12 @@ public class CalculatorService {
                         throw new IllegalArgumentException("Operation not defined: " + request.getOperation());
             };
 
-            CalculatorAnswerModel answer = new CalculatorAnswerModel(request.getOperation(), request.getRequestId(), result.toString());
+            CalculatorAnswerModel answer = new CalculatorAnswerModel(request.getOperation(), request.getRequestId(), result.toString(), true);
             kafkaTemplate.send("calculate-answer", request.getRequestId(), answer);
 
         } catch (Exception e) {
-            System.out.println("Err: " + e.getMessage());
+            CalculatorAnswerModel answer = new CalculatorAnswerModel(request.getOperation(), request.getRequestId(), null, false);
+            kafkaTemplate.send("calculate-answer", request.getRequestId(), answer);
         }
     }
 }
