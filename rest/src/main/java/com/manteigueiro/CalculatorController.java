@@ -1,9 +1,16 @@
 package com.manteigueiro;
 
+import org.apache.kafka.clients.consumer.ConsumerRecord;
+import org.apache.kafka.clients.producer.Producer;
+import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
+import org.springframework.kafka.annotation.KafkaListener;
 import org.springframework.kafka.core.KafkaTemplate;
+import org.springframework.kafka.core.ProducerFactory;
 import org.springframework.web.bind.annotation.*;
 import java.math.BigDecimal;
+import java.util.Map;
+import java.util.concurrent.CompletableFuture;
 
 @RestController
 @RequestMapping("/")
@@ -14,20 +21,34 @@ public class CalculatorController {
         this.kafkaTemplate = kafkaTemplate;
     }
 
-    @GetMapping("/{operation}")
-    public ResponseEntity<String> calculate(
+    @GetMapping(value = "/{operation}", produces = MediaType.APPLICATION_JSON_VALUE)
+    public CompletableFuture<String> calculate(
             @PathVariable String operation,
             @RequestParam String a,
             @RequestParam String b) {
 
-        System.out.println(a + " " + b + " " + operation);
+        try {
+            BigDecimal numA = new BigDecimal(a);
+            BigDecimal numB = new BigDecimal(b);
 
-        CalculatorModel request = new CalculatorModel(BigDecimal.valueOf(Long.parseLong(a)), BigDecimal.valueOf(Long.parseLong(b)), operation);
-        System.out.println(request.toString());
+            CalculatorModel request = new CalculatorModel(numA, numB, operation);
+            return sendRequest(request);
+        }
+        catch (Exception e) {
+            return CompletableFuture.failedFuture(e);
+        }
+    }
 
+    private CompletableFuture<String> sendRequest(CalculatorModel request) {
+        CompletableFuture<String> futureResponse = new CompletableFuture<>();
         kafkaTemplate.send("calculate", request.getRequestId(), request);
+        return futureResponse;
+    }
 
-        return ResponseEntity.accepted()
-                .body("ID: " + request.getRequestId());
+    @KafkaListener(topics = "calculate-answer")
+    public void getAnswerFromQueue(ConsumerRecord<String, CalculatorAnswerModel> answer) {
+        CalculatorAnswerModel response = answer.value();
+        System.out.println("Received response: " + response);
+
     }
 }
