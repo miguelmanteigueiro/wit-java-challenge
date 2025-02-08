@@ -15,7 +15,8 @@ public class CalculatorModel implements Serializable {
     public CalculatorModel(
             BigDecimal operandA,
             BigDecimal operandB,
-            String operation) {
+            String operation
+            ) {
         this.operandA = operandA;
         this.operandB = operandB;
         this.operation = operation;
