@@ -22,7 +22,7 @@ public class CalculatorModel implements Serializable {
         this.requestId = String.valueOf(TimeUnit.MILLISECONDS.toSeconds(System.currentTimeMillis()));
     }
 
-    // Getters and setters
+    // Getters only
     public BigDecimal getOperandA() { return operandA; }
     public BigDecimal getOperandB() { return operandB; }
     public String getOperation() { return operation; }

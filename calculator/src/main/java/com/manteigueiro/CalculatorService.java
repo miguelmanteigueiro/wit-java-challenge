@@ -28,11 +28,11 @@ public class CalculatorService {
             result = switch (request.getOperation()) {
                 case "sum" ->
                         request.getOperandA().add(request.getOperandB());
-                case "subtract" ->
+                case "subtraction" ->
                         request.getOperandA().subtract(request.getOperandB());
-                case "multiply" ->
+                case "multiplication" ->
                         request.getOperandA().multiply(request.getOperandB());
-                case "divide" ->
+                case "division" ->
                         request.getOperandA().divide(request.getOperandB(), SCALE, RoundingMode.HALF_UP);
                 default ->
                         throw new IllegalArgumentException("Operation not defined: " + request.getOperation());
