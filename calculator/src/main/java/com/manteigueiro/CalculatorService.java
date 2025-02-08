@@ -8,7 +8,7 @@ import java.math.RoundingMode;
 
 @Service
 public class CalculatorService {
-        private final KafkaTemplate<String, CalculatorAnswerModel> kafkaTemplate;
+    private final KafkaTemplate<String, CalculatorAnswerModel> kafkaTemplate;
     private static final int SCALE = 10;
 
     public CalculatorService(KafkaTemplate<String, CalculatorAnswerModel> kafkaTemplate) {
@@ -18,11 +18,7 @@ public class CalculatorService {
     @KafkaListener(topics = "calculate")
     public void calculate(CalculatorModel request) {
         BigDecimal result;
-
         System.out.println("\n\n\n\n------------------------- Received request: " + request);
-        System.out.println("------------------------- Received request: " + request.getOperandA());
-        System.out.println("------------------------- Received request: " + request.getOperandB());
-        System.out.println("------------------------- Received request: " + request.getOperation());
 
         try {
             result = switch (request.getOperation()) {
@@ -37,7 +33,6 @@ public class CalculatorService {
                 default ->
                         throw new IllegalArgumentException("Operation not defined: " + request.getOperation());
             };
-            System.out.println("------------------------- result: " + result + "\n\n\n\n");
 
             CalculatorAnswerModel answer = new CalculatorAnswerModel(request.getOperation(), request.getRequestId(), result.toString());
             kafkaTemplate.send("calculate-answer", request.getRequestId(), answer);
