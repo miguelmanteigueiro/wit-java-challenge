@@ -8,10 +8,10 @@ import java.math.RoundingMode;
 
 @Service
 public class CalculatorService {
-    private final KafkaTemplate<String, CalculatorModel> kafkaTemplate;
+        private final KafkaTemplate<String, CalculatorAnswerModel> kafkaTemplate;
     private static final int SCALE = 10;
 
-    public CalculatorService(KafkaTemplate<String, CalculatorModel> kafkaTemplate) {
+    public CalculatorService(KafkaTemplate<String, CalculatorAnswerModel> kafkaTemplate) {
         this.kafkaTemplate = kafkaTemplate;
     }
 
@@ -38,10 +38,12 @@ public class CalculatorService {
                         throw new IllegalArgumentException("Operation not defined: " + request.getOperation());
             };
             System.out.println("------------------------- result: " + result + "\n\n\n\n");
-            //kafkaTemplate.send("calculate", request.getRequestId(), new CalculatorModel(BigDecimal.ONE, BigDecimal.ONE, "AB"));
+
+            CalculatorAnswerModel answer = new CalculatorAnswerModel(request.getOperation(), request.getRequestId(), result.toString());
+            kafkaTemplate.send("calculate-answer", request.getRequestId(), answer);
+
         } catch (Exception e) {
             System.out.println("Err: " + e.getMessage());
-            //kafkaTemplate.send("calculate", request.getRequestId(), new CalculatorModel(BigDecimal.ONE, BigDecimal.ONE, "XX"));
         }
     }
 }
