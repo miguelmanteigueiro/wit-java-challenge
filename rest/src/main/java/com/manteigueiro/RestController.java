@@ -17,15 +17,15 @@ import java.util.HashMap;
 import java.util.Map;
 import java.util.concurrent.CompletableFuture;
 
-@RestController
+@org.springframework.web.bind.annotation.RestController
 @RequestMapping("/")
-public class CalculatorController {
+public class RestController {
 
-    private static final Logger logger = LoggerFactory.getLogger(CalculatorController.class);
+    private static final Logger logger = LoggerFactory.getLogger(RestController.class);
     private final KafkaTemplate<String, CalculatorRequestModel> kafkaTemplate;
     private final Map<String, CompletableFuture<ResponseEntity<String>>> futureRequests;
 
-    public CalculatorController(
+    public RestController(
             KafkaTemplate<String, CalculatorRequestModel> kafkaTemplate,
             Map<String, CompletableFuture<ResponseEntity<String>>> futureResponses
     ) {
