@@ -22,11 +22,11 @@ import java.util.concurrent.CompletableFuture;
 public class CalculatorController {
 
     private static final Logger logger = LoggerFactory.getLogger(CalculatorController.class);
-    private final KafkaTemplate<String, CalculatorModel> kafkaTemplate;
+    private final KafkaTemplate<String, CalculatorRequestModel> kafkaTemplate;
     private final Map<String, CompletableFuture<ResponseEntity<String>>> futureRequests;
 
     public CalculatorController(
-            KafkaTemplate<String, CalculatorModel> kafkaTemplate,
+            KafkaTemplate<String, CalculatorRequestModel> kafkaTemplate,
             Map<String, CompletableFuture<ResponseEntity<String>>> futureResponses
     ) {
         this.kafkaTemplate = kafkaTemplate;
@@ -46,7 +46,7 @@ public class CalculatorController {
             BigDecimal numA = new BigDecimal(a);
             BigDecimal numB = new BigDecimal(b);
 
-            CalculatorModel request = new CalculatorModel(numA, numB, operation);
+            CalculatorRequestModel request = new CalculatorRequestModel(numA, numB, operation);
             logger.debug("Created request with requestId: {}", request.getRequestId());
             return sendRequest(request);
         }
@@ -56,7 +56,7 @@ public class CalculatorController {
         }
     }
 
-    private CompletableFuture<ResponseEntity<String>> sendRequest(CalculatorModel request) {
+    private CompletableFuture<ResponseEntity<String>> sendRequest(CalculatorRequestModel request) {
         CompletableFuture<ResponseEntity<String>> futureResponse = new CompletableFuture<>();
         futureRequests.put(request.getRequestId(), futureResponse);
         logger.debug("Sending request to Kafka with requestId: {}", request.getRequestId());
@@ -65,8 +65,8 @@ public class CalculatorController {
     }
 
     @KafkaListener(topics = "calculate-answer")
-    public void getAnswerFromQueue(ConsumerRecord<String, CalculatorAnswerModel> answer) {
-        CalculatorAnswerModel response = answer.value();
+    public void getAnswerFromQueue(ConsumerRecord<String, CalculatorResponseModel> answer) {
+        CalculatorResponseModel response = answer.value();
         logger.debug("Received response from Kafka for requestId: {}", response.getRequestId());
 
         CompletableFuture<ResponseEntity<String>> future = futureRequests.get(response.getRequestId());
@@ -88,7 +88,7 @@ public class CalculatorController {
         }
     }
 
-    private ResponseEntity<String> createResponse(CalculatorAnswerModel response) {
+    private ResponseEntity<String> createResponse(CalculatorResponseModel response) {
         HttpHeaders headers = new HttpHeaders();
         headers.set("X-Request-ID", response.getRequestId());
 

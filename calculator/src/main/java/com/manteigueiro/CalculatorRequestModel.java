@@ -4,15 +4,15 @@ import java.io.Serializable;
 import java.math.BigDecimal;
 import java.util.concurrent.TimeUnit;
 
-public class CalculatorModel implements Serializable {
+public class CalculatorRequestModel implements Serializable {
     private BigDecimal operandA;
     private BigDecimal operandB;
     private String operation;
     private String requestId;
 
-    public CalculatorModel() {}
+    public CalculatorRequestModel() {}
 
-    public CalculatorModel(
+    public CalculatorRequestModel(
             BigDecimal operandA,
             BigDecimal operandB,
             String operation

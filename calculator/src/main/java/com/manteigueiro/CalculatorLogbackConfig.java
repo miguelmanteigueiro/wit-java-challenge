@@ -6,14 +6,13 @@ import ch.qos.logback.classic.LoggerContext;
 import ch.qos.logback.classic.encoder.PatternLayoutEncoder;
 import ch.qos.logback.classic.spi.ILoggingEvent;
 import ch.qos.logback.core.ConsoleAppender;
-import ch.qos.logback.core.rolling.RollingFileAppender;
-import ch.qos.logback.core.rolling.TimeBasedRollingPolicy;
+import ch.qos.logback.core.FileAppender;
 import jakarta.annotation.PostConstruct;
 import org.slf4j.LoggerFactory;
 import org.springframework.context.annotation.Configuration;
 
 @Configuration
-public class LogbackConfig {
+public class CalculatorLogbackConfig {
 
     @PostConstruct
     public void init() {
@@ -33,20 +32,10 @@ public class LogbackConfig {
         consoleAppender.start();
 
         // Create file appender
-        RollingFileAppender<ILoggingEvent> fileAppender = new RollingFileAppender<>();
+        FileAppender<ILoggingEvent> fileAppender = new FileAppender<>();
         fileAppender.setContext(context);
         fileAppender.setEncoder(encoder);
-        fileAppender.setFile("logs/rest-api.log");
-
-        // Create rolling policy
-        TimeBasedRollingPolicy<ILoggingEvent> rollingPolicy = new TimeBasedRollingPolicy<>();
-        rollingPolicy.setContext(context);
-        rollingPolicy.setParent(fileAppender);
-        rollingPolicy.setFileNamePattern("logs/rest-api.%d{yyyy-MM-dd}.log");
-        rollingPolicy.setMaxHistory(30);
-        rollingPolicy.start();
-
-        fileAppender.setRollingPolicy(rollingPolicy);
+        fileAppender.setFile("logs/calculator-service.log");
         fileAppender.start();
 
         // Configure root logger

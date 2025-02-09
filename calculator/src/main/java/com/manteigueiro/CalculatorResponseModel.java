@@ -2,15 +2,15 @@ package com.manteigueiro;
 
 import java.io.Serializable;
 
-public class CalculatorAnswerModel implements Serializable {
+public class CalculatorResponseModel implements Serializable {
     private String operation;
     private String requestId;
     private String result;
     private Boolean successfullyProcessed;
 
-    public CalculatorAnswerModel () {}
+    public CalculatorResponseModel() {}
 
-    public CalculatorAnswerModel (
+    public CalculatorResponseModel(
             String operation,
             String requestId,
             String result,
@@ -23,15 +23,11 @@ public class CalculatorAnswerModel implements Serializable {
     };
 
 
-    // Getters and Setters
+    // Getters only
     public String getOperation() { return operation; }
-    public void setOperation(String operation) { this.operation = operation; }
     public String getRequestId() { return requestId; }
-    public void setRequestId(String requestId) { this.requestId = requestId; }
     public String getResult() { return result; }
-    public void setResult(String result) { this.result = result; }
     public Boolean getSuccessfullyProcessed() { return successfullyProcessed; }
-    public void setSuccessfullyProcessed(Boolean successfullyProcessed) { this.successfullyProcessed = successfullyProcessed; }
 
     @Override
     public String toString() {
