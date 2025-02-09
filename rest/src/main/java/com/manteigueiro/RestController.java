@@ -5,6 +5,7 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 import org.apache.kafka.clients.consumer.ConsumerRecord;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.slf4j.MDC;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
@@ -16,6 +17,7 @@ import java.math.BigDecimal;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.concurrent.CompletableFuture;
+import java.util.concurrent.TimeUnit;
 
 @org.springframework.web.bind.annotation.RestController
 @RequestMapping("/")
@@ -42,17 +44,26 @@ public class RestController {
 
         logger.info("Received calculation request - Operation: {}, A: {}, B: {}", operation, a, b);
 
+        String requestId = String.valueOf(TimeUnit.MILLISECONDS.toSeconds(System.currentTimeMillis()));
+        // Set MDC context
+        MDC.put("requestId", requestId);
+        MDC.put("operation", operation);
+
         try {
             BigDecimal numA = new BigDecimal(a);
             BigDecimal numB = new BigDecimal(b);
 
-            CalculatorRequestModel request = new CalculatorRequestModel(numA, numB, operation);
+            CalculatorRequestModel request = new CalculatorRequestModel(numA, numB, operation, requestId);
+            request.setRequestId(requestId);
             logger.debug("Created request with requestId: {}", request.getRequestId());
             return sendRequest(request);
         }
         catch (Exception e) {
             logger.error("Error processing calculation request: {}", e.getMessage(), e);
             return CompletableFuture.failedFuture(e);
+        }
+        finally {
+            MDC.clear();
         }
     }
 

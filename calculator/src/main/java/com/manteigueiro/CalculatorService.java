@@ -2,6 +2,7 @@ package com.manteigueiro;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.slf4j.MDC;
 import org.springframework.kafka.annotation.KafkaListener;
 import org.springframework.kafka.core.KafkaTemplate;
 import org.springframework.stereotype.Service;
@@ -11,6 +12,7 @@ import java.math.RoundingMode;
 @Service
 public class CalculatorService {
     private static final Logger logger = LoggerFactory.getLogger(CalculatorService.class);
+
     private final KafkaTemplate<String, CalculatorResponseModel> kafkaTemplate;
     private static final int SCALE = 10;
 
@@ -29,6 +31,11 @@ public class CalculatorService {
         BigDecimal result;
 
         try {
+            // Restore MDC context, if available
+            if (request.getMdcContext() != null){
+                MDC.setContextMap(request.getMdcContext().getContextMap());
+            }
+
             result = switch (request.getOperation()) {
                 case "sum" -> {
                     logger.debug("Performing addition");
@@ -76,6 +83,9 @@ public class CalculatorService {
             logger.error("Unexpected error during calculation for requestId: {} - {}",
                     request.getRequestId(), e.getMessage(), e);
             sendErrorResponse(request, "Unexpected error occurred");
+        }
+        finally {
+            MDC.clear();
         }
     }
 
