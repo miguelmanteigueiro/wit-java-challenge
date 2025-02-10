@@ -12,10 +12,15 @@ dependencies {
     implementation 'ch.qos.logback:logback-classic'
     implementation project(':calculator')
 
+    // TESTS
     testImplementation 'org.springframework.boot:spring-boot-starter-test'
     testImplementation 'org.springframework.kafka:spring-kafka-test'
 }
 
 bootJar {
     mainClass = 'com.manteigueiro.RestApplication'
+}
+
+tasks.named('test') {
+    useJUnitPlatform()
 }

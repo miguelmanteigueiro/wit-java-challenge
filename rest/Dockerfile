@@ -1,6 +1,7 @@
 FROM amazoncorretto:17 AS builder
 WORKDIR /app
 COPY . .
+RUN ./gradlew :rest:test
 RUN ./gradlew :rest:bootJar -x test
 
 FROM amazoncorretto:17
