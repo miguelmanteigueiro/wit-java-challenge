@@ -116,9 +116,9 @@ public class RestController {
         }
     }
 
-    private ResponseEntity<String> createJsonResponse(Map<String, String> jsonResponse,
-                                                      HttpStatus status,
-                                                      HttpHeaders headers) {
+    public ResponseEntity<String> createJsonResponse(Map<String, String> jsonResponse,
+                                                     HttpStatus status,
+                                                     HttpHeaders headers) {
         try {
             String json = new ObjectMapper().writeValueAsString(jsonResponse);
             return ResponseEntity.status(status)
