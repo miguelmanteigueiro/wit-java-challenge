@@ -14,9 +14,13 @@ docker-compose up --build
 
 ## API Endpoints
 The project has the following API endpoints:
+
 `http://localhost:8080/sum?a=1&b=2`
+
 `http://localhost:8080/subtraction?a=1&b=2`
+
 `http://localhost:8080/multiplication?a=1&b=2`
+
 `http://localhost:8080/division?a=1&b=2`
 
 
