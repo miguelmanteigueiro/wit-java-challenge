@@ -44,7 +44,7 @@ class CalculatorServiceTest {
         ArgumentCaptor<CalculatorResponseModel> responseCaptor = ArgumentCaptor.forClass(CalculatorResponseModel.class);
         verify(kafkaTemplate).send(eq("calculate-answer"), eq("1678886404"), responseCaptor.capture());
 
-            CalculatorResponseModel response = responseCaptor.getValue();
+        CalculatorResponseModel response = responseCaptor.getValue();
         assertEquals("sum", response.getOperation());
         assertEquals("1678886404", response.getRequestId());
         assertEquals("8", response.getResult());

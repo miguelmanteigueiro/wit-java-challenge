@@ -41,7 +41,7 @@ public class CalculatorRequestModel implements Serializable {
         this.mdcContext = null;
     }
 
-    // Getters only
+    // Getters and Setter
     public BigDecimal getOperandA() { return operandA; }
     public BigDecimal getOperandB() { return operandB; }
     public String getOperation() { return operation; }
